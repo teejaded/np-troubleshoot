@@ -1,0 +1,298 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: tcp-proxy
+  name: quickstart-tcp-proxy
+  namespace: hsts
+spec:
+  egress:
+  - {}
+  ingress:
+  - ports:
+    - port: fasptcp
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+      name: tcp-proxy
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: http-proxy
+  name: quickstart-http-proxy
+  namespace: hsts
+spec:
+  egress:
+  - {}
+  ingress:
+  - ports:
+    - port: api
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+      name: http-proxy
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: engine
+  name: quickstart-engine
+  namespace: hsts
+spec:
+  egress:
+  - {}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          cr.name: quickstart
+          cr.namespace: hsts
+          name: engine
+    ports:
+    - port: api
+      protocol: TCP
+  - from:
+    - podSelector:
+        matchLabels:
+          cr.name: quickstart
+          cr.namespace: hsts
+          name: http-scheduler
+    ports:
+    - port: api
+      protocol: TCP
+  - from:
+    - podSelector:
+        matchLabels:
+          cr.name: quickstart
+          cr.namespace: hsts
+          name: tcp-scheduler
+    ports:
+    - port: api
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+      name: engine
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: asperanoded
+  name: quickstart-asperanoded
+  namespace: hsts
+spec:
+  egress:
+  - {}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          cr.name: quickstart
+          cr.namespace: hsts
+          name: http-proxy
+    ports:
+    - port: api
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+      name: asperanoded
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: asperanoded-master
+  name: quickstart-asperanoded-master
+  namespace: hsts
+spec:
+  egress:
+  - {}
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+      name: asperanoded-master
+  policyTypes:
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: prometheus
+  name: quickstart-prometheus
+  namespace: hsts
+spec:
+  egress:
+  - {}
+  ingress:
+  - ports:
+    - port: api
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+      name: prometheus
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: http-scheduler
+  name: quickstart-http-scheduler
+  namespace: hsts
+spec:
+  egress:
+  - {}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          cr.name: quickstart
+          cr.namespace: hsts
+          name: http-proxy
+    ports:
+    - port: api
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+      name: http-scheduler
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: tcp-scheduler
+  name: quickstart-tcp-scheduler
+  namespace: hsts
+spec:
+  egress:
+  - {}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          cr.name: quickstart
+          cr.namespace: hsts
+          name: tcp-proxy
+    ports:
+    - port: api
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+      name: tcp-scheduler
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: ascp
+  name: quickstart-ascp
+  namespace: hsts
+spec:
+  egress:
+  - {}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          cr.name: quickstart
+          cr.namespace: hsts
+          name: http-proxy
+    ports:
+    - port: api
+      protocol: TCP
+  - from:
+    - podSelector:
+        matchLabels:
+          cr.name: quickstart
+          cr.namespace: hsts
+          name: tcp-proxy
+    ports:
+    - port: fasptcp
+      protocol: TCP
+  - ports:
+    - port: faspudp
+      protocol: UDP
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+      name: ascp
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    cr.name: quickstart
+    cr.namespace: hsts
+    name: default-deny-all
+  name: quickstart-default-deny-all
+  namespace: hsts
+spec:
+  podSelector:
+    matchLabels:
+      cr.name: quickstart
+      cr.namespace: hsts
+  policyTypes:
+  - Egress
+  - Ingress
